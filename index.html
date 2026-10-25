@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOURNAMENT MLBB INFLY CARNIVAL</title>
+    <style>
+        :root {
+            --bg-primary: #1e0533;
+            --bg-secondary: rgba(46, 12, 75, 0.9);
+            --accent-gold: #f59e0b;
+            --accent-cyan: #38bdf8;
+            --text-white: #ffffff;
+            --border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2e0854 0%, #4a0e4e 50%, #0369a1 100%);
+            background-attachment: fixed;
+            color: var(--text-white);
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 16px 16px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Modal Login / Pilih Peran */
+        #login-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 5, 25, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-gold);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+        }
+
+        .modal-box h2 {
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .modal-box p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .btn-admin {
+            background: var(--accent-gold);
+            color: #1e0533;
+        }
+
+        .btn-admin:hover {
+            background: #d97706;
+        }
+
+        .btn-viewer {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+        }
+
+        .btn-viewer:hover {
+            background: rgba(56, 189, 248, 0.4);
+        }
+
+        .panitia-login-box {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .panitia-login-box input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Top Bar Status */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(30, 5, 51, 0.8);
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .role-badge {
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .badge-admin { background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        .badge-viewer { background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(76, 29, 149, 0.7) 0%, rgba(30, 5, 51, 0.9) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.5);
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(192, 132, 252, 0.4);
+        }
+
+        header h1 {
+            color: var(--accent-gold);
+            font-size: 2.3rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--accent-cyan);
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        /* Navigasi Menu Utama */
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background-color: rgba(30, 5, 51, 0.9);
+            color: var(--accent-cyan);
+            border: 2px solid var(--accent-cyan);
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-btn.active {
+            background-color: var(--accent-gold);
+            color: #1e0533;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .tab-section {
+            display: none;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        /* Halaman Daftar Tim */
+        .team-list-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .team-list-container h2 {
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .sub-tab-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sub-tab-btn {
+            background: rgba(0,0,0,0.4);
+            color: #cbd5e1;
+            border: 1px solid var(--border-color);
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .sub-tab-btn.active {
+            background: var(--accent-cyan);
+            color: #1e0533;
+            border-color: var(--accent-cyan);
+        }
+
+        .sub-content {
+            display: none;
+        }
+        .sub-content.active {
+            display: block;
+        }
+
+        .team-inputs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .team-input-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .team-input-item span {
+            min-width: 55px;
+            color: var(--accent-cyan);
+            font-weight: bold;
+        }
+
+        .team-input-item input {
+            flex-grow: 1;
+            padding: 6px 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        /* Struktur Bagan Bracket */
+        .bracket-scroll-area {
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        .bracket-container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 30px;
+            min-width: 1350px;
+            padding: 10px 0;
+        }
+
+        .round {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .round-title {
+            text-align: center;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .matchup {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .matchup.final-match {
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .matchup.third-match {
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .matchup-label {
+            background: rgba(0, 0, 0, 0.5);
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            text-align: center;
+            padding: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .team {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 12px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: background 0.2s;
+        }
+
+        .team:last-child {
+            border-bottom: none;
+        }
+
+        .team.winner {
+            background: rgba(245, 158, 11, 0.25);
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        .team-name {
+            flex-grow: 1;
+            margin-right: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+        }
+
+        .score-input {
+            width: 38px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--accent-cyan);
+            font-weight: bold;
+            text-align: center;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .score-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 5px rgba(245, 158, 11, 0.6);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #1e0533;
+            border: none;
+            padding: 12px 28px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MODAL LOGIN / PILIH PERAN -->
+    <div id="login-modal">
+        <div class="modal-box">
+            <h2>Pilih Akses Masuk</h2>
+            <p>Silakan pilih menu masuk di bawah ini:</p>
+            <button class="modal-btn btn-viewer" onclick="setRole('viewer')">👤 Login Peserta</button>
+            <button class="modal-btn btn-admin" onclick="showPanitiaLoginBox()">🛡️ Login Panitia</button>
+            
+            <div id="panitia-login-container" class="panitia-login-box">
+                <input type="text" id="panitia-user-input" placeholder="Masukkan Username">
+                <input type="password" id="panitia-pass-input" placeholder="Masukkan Password">
+                <button class="modal-btn btn-admin" onclick="verifyPanitiaLogin()">Masuk Panitia</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- TOP BAR STATUS -->
+        <div class="top-bar">
+            <span id="role-display" class="role-badge badge-viewer">Status: Peserta</span>
+            <button class="btn" style="padding: 6px 15px; font-size: 0.85rem;" onclick="location.reload()">Ganti Peran / Keluar</button>
+        </div>
+
+        <header>
+            <h1>TOURNAMENT MLBB INFLY CARNIVAL</h1>
+            <p>Kategori Pelajar & Umum (16 Tim)</p>
+        </header>
+
+        <!-- Navigasi Menu Utama -->
+        <div class="main-nav">
+            <button class="nav-btn active" onclick="switchMainTab(event, 'section-teams')">📋 Daftar Tim Terdaftar</button>
+            <button class="nav-btn" onclick="switchMainTab(event, 'section-pelajar')">🎓 Bracket Pelajar</button>
+            <button class="nav-btn" onclick="switchMainTab(event, 'section-umum')">🔥 Bracket Umum</button>
+        </div>
+
+        <!-- ================= SECTION 1: DAFTAR TIM TERDAFTAR ================= -->
+        <div id="section-teams" class="tab-section active">
+            <div class="team-list-container">
+                <h2>Manajemen Daftar Tim Peserta</h2>
+                
+                <div class="sub-tab-container">
+                    <button class="sub-tab-btn active" onclick="switchSubTab(event, 'sub-pelajar')">Kategori Pelajar (16 Tim)</button>
+                    <button class="sub-tab-btn" onclick="switchSubTab(event, 'sub-umum')">Kategori Umum (16 Tim)</button>
+                </div>
+
+                <!-- Sub-Tab Pelajar -->
+                <div id="sub-pelajar" class="sub-content active">
+                    <div class="team-inputs-grid" id="pelajar-team-inputs"></div>
+                    <div id="admin-save-pelajar" style="text-align: center; margin-top: 20px; display: none;">
+                        <button class="btn" onclick="saveAndApplyTeams('pelajar')">Simpan & Perbarui Bagan Pelajar</button>
+                    </div>
+                </div>
+
+                <!-- Sub-Tab Umum -->
+                <div id="sub-umum" class="sub-content">
+                    <div class="team-inputs-grid" id="umum-team-inputs"></div>
+                    <div id="admin-save-umum" style="text-align: center; margin-top: 20px; display: none;">
+                        <button class="btn" onclick="saveAndApplyTeams('umum')">Simpan & Perbarui Bagan Umum</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 2: BRACKET PELAJAR ================= -->
+        <div id="section-pelajar" class="tab-section">
+            <div class="bracket-scroll-area">
+                <div class="bracket-container">
+                    <div class="round">
+                        <div class="round-title">16 Besar Pelajar</div>
+                        <div class="matchup" data-match="1"><div class="team"><span class="team-name" id="p-t1">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name" id="p-t2">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="2"><div class="team"><span class="team-name" id="p-t3">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name" id="p-t4">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="3"><div class="team"><span class="team-name" id="p-t5">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name" id="p-t6">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="4"><div class="team"><span class="team-name" id="p-t7">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name" id="p-t8">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="5"><div class="team"><span class="team-name" id="p-t9">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name" id="p-t10">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="6"><div class="team"><span class="team-name" id="p-t11">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name" id="p-t12">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="7"><div class="team"><span class="team-name" id="p-t13">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name" id="p-t14">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="8"><div class="team"><span class="team-name" id="p-t15">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name" id="p-t16">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                    </div>
+                    <div class="round">
+                        <div class="round-title">Perempat Final</div>
+                        <div class="matchup" data-match="qf-1" style="margin: 25px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="qf-2" style="margin: 25px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="qf-3" style="margin: 25px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="qf-4" style="margin: 25px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                    </div>
+                    <div class="round">
+                        <div class="round-title">Semifinal</div>
+                        <div class="matchup" data-match="sf-1" style="margin: 75px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup" data-match="sf-2" style="margin: 75px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                    </div>
+                    <div class="round" style="justify-content: center;">
+                        <div class="round-title">Perebutan Juara</div>
+                        <div class="matchup final-match" data-match="final"><div class="matchup-label">👑 Grand Final (Juara 1 & 2)</div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                        <div class="matchup third-match" data-match="third" style="margin-top: 30px;"><div class="matchup-label">🥉 Perebutan Juara 3 & 4</div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('pelajar')"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 3: BRACKET UMUM ================= -->
+        <div id="section-umum" class="tab-section">
+            <div class="bracket-scroll-area">
+                <div class="bracket-container">
+                    <div class="round">
+                        <div class="round-title">16 Besar Umum</div>
+                        <div class="matchup" data-match="1"><div class="team"><span class="team-name" id="u-t1">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name" id="u-t2">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="2"><div class="team"><span class="team-name" id="u-t3">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name" id="u-t4">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="3"><div class="team"><span class="team-name" id="u-t5">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name" id="u-t6">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="4"><div class="team"><span class="team-name" id="u-t7">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name" id="u-t8">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="5"><div class="team"><span class="team-name" id="u-t9">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name" id="u-t10">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="6"><div class="team"><span class="team-name" id="u-t11">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name" id="u-t12">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="7"><div class="team"><span class="team-name" id="u-t13">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name" id="u-t14">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="8"><div class="team"><span class="team-name" id="u-t15">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name" id="u-t16">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                    </div>
+                    <div class="round">
+                        <div class="round-title">Perempat Final</div>
+                        <div class="matchup" data-match="qf-1" style="margin: 25px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="qf-2" style="margin: 25px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="qf-3" style="margin: 25px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="qf-4" style="margin: 25px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                    </div>
+                    <div class="round">
+                        <div class="round-title">Semifinal</div>
+                        <div class="matchup" data-match="sf-1" style="margin: 75px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup" data-match="sf-2" style="margin: 75px 0;"><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                    </div>
+                    <div class="round" style="justify-content: center;">
+                        <div class="round-title">Perebutan Juara</div>
+                        <div class="matchup final-match" data-match="final"><div class="matchup-label">👑 Grand Final (Juara 1 & 2)</div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                        <div class="matchup third-match" data-match="third" style="margin-top: 30px;"><div class="matchup-label">🥉 Perebutan Juara 3 & 4</div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div><div class="team"><span class="team-name">-</span><input type="number" min="0" class="score-input" value="0" oninput="calculateBracket('umum')"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT JAVASCRIPT -->
+    <script>
+        let pelajarTeams = [];
+        let umumTeams = [];
+
+        for(let i=1; i<=16; i++) {
+            pelajarTeams.push(`SMA ${i} Team`);
+            umumTeams.push(`Team Umum ${i < 10 ? '0' + i : i}`);
+        }
+
+        window.onload = function() {
+            renderTeamInputs('pelajar');
+            renderTeamInputs('umum');
+            applyTeamsToBracket('pelajar');
+            applyTeamsToBracket('umum');
+        };
+
+        function renderTeamInputs(category) {
+            const container = document.getElementById(`${category}-team-inputs`);
+            const teamsArray = category === 'pelajar' ? pelajarTeams : umumTeams;
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 16; i++) {
+                container.innerHTML += `
+                    <div class="team-input-item">
+                        <span>Tim ${i+1}:</span>
+                        <input type="text" id="${category}-field-${i}" value="${teamsArray[i]}">
+                    </div>
+                `;
+            }
+        }
+
+        function setRole(role, username = '') {
+            document.getElementById('login-modal').style.display = 'none';
+            const badge = document.getElementById('role-display');
+            
+            if (role === 'admin') {
+                badge.className = 'role-badge badge-admin';
+                badge.textContent = `Status: Panitia (${username.toUpperCase()})`;
+                document.getElementById('admin-save-pelajar').style.display = 'block';
+                document.getElementById('admin-save-umum').style.display = 'block';
+                setInputsEditable(true);
+            } else {
+                badge.className = 'role-badge badge-viewer';
+                badge.textContent = 'Status: Peserta (Hanya Lihat)';
+                document.getElementById('admin-save-pelajar').style.display = 'none';
+                document.getElementById('admin-save-umum').style.display = 'none';
+                setInputsEditable(false);
+            }
+        }
+
+        function showPanitiaLoginBox() {
+            document.getElementById('panitia-login-container').style.display = 'block';
+        }
+
+        function verifyPanitiaLogin() {
+            const userInput = document.getElementById('panitia-user-input').value.trim().toLowerCase();
+            const passInput = document.getElementById('panitia-pass-input').value;
+
+            // Daftar Username dan Password Panitia
+            const panitiaUsers = {
+                "bentar": "infly2026",
+                "dwi": "infly2026",
+                "rafa": "infly2026",
+                "nuzul": "infly2026",
+                "dimas": "infly2026",
+                "ipank": "infly2026",
+                "dana": "infly2026",
+                "untung": "infly2026"
+            };
+
+            if (panitiaUsers[userInput] && panitiaUsers[userInput] === passInput) {
+                setRole('admin', userInput);
+            } else {
+                alert('Username atau Password salah! Periksa kembali data login Anda.');
+            }
+        }
+
+        function setInputsEditable(enable) {
+            document.querySelectorAll('.score-input').forEach(input => input.disabled = !enable);
+            document.querySelectorAll('.team-inputs-grid input').forEach(input => input.disabled = !enable);
+        }
+
+        function saveAndApplyTeams(category) {
+            const teamsArray = category === 'pelajar' ? pelajarTeams : umumTeams;
+            for (let i = 0; i < 16; i++) {
+                const val = document.getElementById(`${category}-field-${i}`).value.trim();
+                teamsArray[i] = val || `Tim ${i+1}`;
+            }
+            applyTeamsToBracket(category);
+            alert(`Daftar tim ${category} berhasil disimpan dan diperbarui di bagan!`);
+        }
+
+        function applyTeamsToBracket(category) {
+            const teamsArray = category === 'pelajar' ? pelajarTeams : umumTeams;
+            const prefix = category === 'pelajar' ? 'p' : 'u';
+            
+            for (let i = 1; i <= 16; i++) {
+                const span = document.getElementById(`${prefix}-t${i}`);
+                if (span) {
+                    span.textContent = teamsArray[i-1];
+                }
+            }
+            calculateBracket(category);
+        }
+
+        function switchMainTab(evt, sectionId) {
+            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(sectionId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function switchSubTab(evt, subId) {
+            document.querySelectorAll('.sub-content').forEach(sub => sub.classList.remove('active'));
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(subId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function calculateBracket(category) {
+            const container = document.getElementById(category === 'pelajar' ? 'section-pelajar' : 'section-umum');
+            const prefix = category === 'pelajar' ? 'p' : 'u';
+            
+            function getWinnerR1(matchNum) {
+                const matchEl = container.querySelector(`.round:nth-child(1) .matchup[data-match="${matchNum}"]`);
+                if (!matchEl) return "-";
+                const teams = matchEl.querySelectorAll('.team');
+                const t1Name = document.getElementById(`${prefix}-t${matchNum*2-1}`).textContent.trim();
+                const s1 = parseInt(teams[0].querySelector('.score-input').value) || 0;
+                const t2Name = document.getElementById(`${prefix}-t${matchNum*2}`).textContent.trim();
+                const s2 = parseInt(teams[1].querySelector('.score-input').value) || 0;
+
+                teams[0].classList.remove('winner');
+                teams[1].classList.remove('winner');
+
+                if (s1 === 0 && s2 === 0) return "-";
+                if (s1 > s2) {
+                    teams[0].classList.add('winner');
+                    return t1Name;
+                } else if (s2 > s1) {
+                    teams[1].classList.add('winner');
+                    return t2Name;
+                }
+                return "-";
+            }
+
+            const w1 = getWinnerR1(1), w2 = getWinnerR1(2), w3 = getWinnerR1(3), w4 = getWinnerR1(4);
+            const w5 = getWinnerR1(5), w6 = getWinnerR1(6), w7 = getWinnerR1(7), w8 = getWinnerR1(8);
+
+            setTeamToMatch(container, 'qf-1', 0, w1);
+            setTeamToMatch(container, 'qf-1', 1, w2);
+            setTeamToMatch(container, 'qf-2', 0, w3);
+            setTeamToMatch(container, 'qf-2', 1, w4);
+            setTeamToMatch(container, 'qf-3', 0, w5);
+            setTeamToMatch(container, 'qf-3', 1, w6);
+            setTeamToMatch(container, 'qf-4', 0, w7);
+            setTeamToMatch(container, 'qf-4', 1, w8);
+
+            function getWinnerQF(qfNum) {
+                const matchEl = container.querySelector(`.round:nth-child(2) .matchup[data-match="qf-${qfNum}"]`);
+                if (!matchEl) return { winner: "-", loser: "-" };
+                const teams = matchEl.querySelectorAll('.team');
+                const t1Name = teams[0].querySelector('.team-name').textContent.trim();
+                const s1 = parseInt(teams[0].querySelector('.score-input').value) || 0;
+                const t2Name = teams[1].querySelector('.team-name').textContent.trim();
+                const s2 = parseInt(teams[1].querySelector('.score-input').value) || 0;
+
+                teams[0].classList.remove('winner');
+                teams[1].classList.remove('winner');
+
+                if (t1Name === "-" || t2Name === "-" || (s1 === 0 && s2 === 0)) return { winner: "-", loser: "-" };
+                if (s1 > s2) {
+                    teams[0].classList.add('winner');
+                    return { winner: t1Name, loser: t2Name };
+                } else if (s2 > s1) {
+                    teams[1].classList.add('winner');
+                    return { winner: t2Name, loser: t1Name };
+                }
+                return { winner: "-", loser: "-" };
+            }
+
+            const qf1 = getWinnerQF(1), qf2 = getWinnerQF(2), qf3 = getWinnerQF(3), qf4 = getWinnerQF(4);
+
+            setTeamToMatch(container, 'sf-1', 0, qf1.winner);
+            setTeamToMatch(container, 'sf-1', 1, qf2.winner);
+            setTeamToMatch(container, 'sf-2', 0, qf3.winner);
+            setTeamToMatch(container, 'sf-2', 1, qf4.winner);
+
+            function getWinnerSF(sfNum) {
+                const matchEl = container.querySelector(`.round:nth-child(3) .matchup[data-match="sf-${sfNum}"]`);
+                if (!matchEl) return { winner: "-", loser: "-" };
+                const teams = matchEl.querySelectorAll('.team');
+                const t1Name = teams[0].querySelector('.team-name').textContent.trim();
+                const s1 = parseInt(teams[0].querySelector('.score-input').value) || 0;
+                const t2Name = teams[1].querySelector('.team-name').textContent.trim();
+                const s2 = parseInt(teams[1].querySelector('.score-input').value) || 0;
+
+                teams[0].classList.remove('winner');
+                teams[1].classList.remove('winner');
+
+                if (t1Name === "-" || t2Name === "-" || (s1 === 0 && s2 === 0)) return { winner: "-", loser: "-" };
+                if (s1 > s2) {
+                    teams[0].classList.add('winner');
+                    return { winner: t1Name, loser: t2Name };
+                } else if (s2 > s1) {
+                    teams[1].classList.add('winner');
+                    return { winner: t2Name, loser: t1Name };
+                }
+                return { winner: "-", loser: "-" };
+            }
+
+            const sf1 = getWinnerSF(1), sf2 = getWinnerSF(2);
+
+            setTeamToMatch(container, 'final', 0, sf1.winner);
+            setTeamToMatch(container, 'final', 1, sf2.winner);
+
+            setTeamToMatch(container, 'third', 0, sf1.loser);
+            setTeamToMatch(container, 'third', 1, sf2.loser);
+        }
+
+        function setTeamToMatch(container, matchKey, teamIndex, teamName) {
+            const matchEl = container.querySelector(`.matchup[data-match="${matchKey}"]`);
+            if (!matchEl) return;
+            const teamEl = matchEl.querySelectorAll('.team')[teamIndex];
+            if (!teamEl) return;
+            const nameSpan = teamEl.querySelector('.team-name');
+            nameSpan.textContent = teamName;
+        }
+    </script>
+</body>
+</html>
